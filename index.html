@@ -1,0 +1,156 @@
+<html> 
+<head> 
+<title>SNS: Analytic Receiver Modeling Engine</title> 
+<link rel="stylesheet" type="text/css" href="ch_style.css" /> 
+ 
+<script type="text/javascript"> 
+<!-- Begin
+function mangle() {
+  if (!document.getElementsByTagName && !document.createElement &&
+    !document.createTextNode) return;
+  var nodes = document.getElementsByTagName("span");
+  for(var i=nodes.length-1;i>=0;i--) {
+    if (nodes[i].className=="change") {
+      var at = /at/;
+      var dot = /dot/g;
+      var address = nodes[i].firstChild.nodeValue.split(" ").join("");
+      var node = document.createElement("a");
+ 
+      address = address.replace(at, "@");
+      address = address.replace(dot, ".");
+      node.setAttribute("href", "mailto:"+address);
+      node.appendChild(document.createTextNode(address));
+ 
+      var parent = nodes[i].parentNode;
+      for(var j=0;j<parent.childNodes.length;j++)
+        if (parent.childNodes[j] == nodes[i]) {
+          if (!parent.replaceChild) return;
+          parent.replaceChild(node, parent.childNodes[j]);
+          break;
+        }
+    }
+  }
+}
+//-->
+</script> 
+ 
+</head> 
+<body onLoad="mangle()"> 
+ 
+<div id="text"> 
+<h2>
+SNS: Analytic Receiver Modeling Software
+</h2>
+
+  <h1>
+  Scattering matrices?
+  </h1>
+  <p>
+  Electrical scattering matrices can be used to describe the behavior of
+  receiver components. They're very powerful: they can provide a full
+  description of the reflection and transmitted waves. Using this
+  formalism also allows us to describe the intrinsic noise produced by
+  the components in the same framework.
+  </p>
+
+  <p>
+  The mathematics of finding the response of a connected network of
+  components is, unfortunately, not trivial. Luckily, non-trivial
+  does not mean impossible. Algorithms for calculating the response of
+  an arbitrarily connected network can be derived and implemented by
+  hand if you're mad, or in software.
+  </p>
+
+  <p>
+  SNS is a MATLAB-based implementation of such an algorithm that I
+  wrote. I use it mainly for modeling radio/microwave/mm astronomical receivers. What
+  makes SNS different from existing freely-available software like
+  <a href="http://www.submm.caltech.edu/supermix/default.html">SUPERMIX</a>
+  is that the scattering matrices used to describe the receiver and its components can be
+  analytic rather than numeric. This allows you to perform some very
+  useful analysis.
+  </p>
+  
+  <p>
+  For instance, non-ideal behavior of receiver components can be parameterized in
+  their scattering matrices. SNS enables the instrument designer to
+  then derive analytic expressions for the signal and noise at the
+  receiver outputs in terms of parameterized component imperfections,
+  and predict their contribution to receiver systematic errors
+  precisely. This can drive the receiver design process by, for
+  instance, allowing the instrument designer to identify which
+  component imperfections contribute most to receiver systematic
+  errors, and hence place firm specifications on individual
+  components. Using SNS to perform this analysis is preferable to
+  traditional Jones matrix-based analysis as it includes internal
+  reflections and is able to model noise: two effects which Jones
+  matrix analysis is unable to describe.
+  </p>
+
+<h1>
+Example
+</h1>
+<div id="piccy" style="width: 400px; float: right; margin-left: 15px"><img src="example_network.png" width="400px"></div> 
+<p>
+SNS is very easy to use. Components are modeled as N-port objects, and
+connections between ports as nodes. Here is the code snippet which
+describes the network shown on the right:
+<blockquote> 
+<tt>
+% Matrices S1, S2, S3, S4, S5 and vectors c1, c2, c3, c4, c5 assumed to <br> 
+% have been previously defined using symbolic algebra library. <br>
+% Make the N-port objects <br>
+P1 = makeNport(); P2 = makeNport(); P3 = makeNport();<br>
+P4 = makeNport(); P5 = makeNport();<br>
+% Assign scattering matrices and noise vectors <br>
+P1.S = S1; P2.S = S2; P3.S = S3; P4.S = S4; P5.S = S5;<br>
+P1.c = c1; P2.c = c2; P3.c = c3; P4.c = c4; P5.c = c5;<br>
+% Make the nodes which connect the N-port objects <br>
+In1 = makeNode(); In2 = makeNode(); On1 = makeNode();<br>
+On2 = makeNode(); Tn1 = makeNode(); Cn1 = makeNode(); <br>
+Cn2 = makeNode(); Cn3 = makeNode();<br>
+Cn4 = makeNode(); Cn5 = makeNode();<br>
+% Connect nodes to N-ports <br>
+connectNode(In1,[],1,P1,1); connectNode(In2,[],1,P1,4);<br>
+connectNode(Cn1,P1,2,P3,1); connectNode(Cn2,P1,3,P4,1);<br>
+connectNode(Cn3,P3,2,P2,1); connectNode(Cn4,P4,2,P2,4); <br>
+connectNode(Cn5,P3,3,P5,1); connectNode(Tn1,P2,3,[],1); <br>
+connectNode(On1,P5,2,[],1); connectNode(On2,P2,2,[],1);<br>
+% Build arrays of nodes <br>
+inputs = {In1 In2}; outputs = {On1 On2}; <br>
+cnodes = {Cn1 Cn2 Cn3 Cn4 Cn5}; tnodes = {Tn1};<br>
+% Pass arrays of nodes to network calculator <br>
+[S, c] = getScatteringRecursive(inputs,outputs,cnodes,tnodes);<br>
+</tt><br> 
+</blockquote> 
+</p>
+
+<p>
+The functions <tt>makeNode()</tt>, <tt>makeNport()</tt>,
+<tt>connectNode()</tt>, and <tt>getScatteringRecursive()</tt> are all
+part of the SNS library. SNS consists of two parts: one part
+creates and navigates arbitrarily connected networks of components;
+the second part calculates the equivalent scattering matrix and noise
+wave vector for the connected network. The matrix <tt>S</tt> and
+vector <tt>c</tt> returned by <tt>getScatteringRecursive()</tt>
+describe the 4-port device which has the same response as the
+connected network, where inputs ports <tt>In1</tt> and <tt>In2</tt>
+are connected to ports 1 and 2 respectively, while output ports <tt>On1</tt> and <tt>On2</tt>
+are connected to ports 3 and 4 respectively.
+</p>
+
+  <h1>
+  Acknowledgements
+  </h1>
+<p>
+If you use this software, please use the reference:
+ Oliver G. King (2010), "SNS: Analytic Receiver Analysis Software
+  Using Electrical Scattering Matrices", 21st International Symposium
+  on Space Terahertz Technology: Symposium Proceedings. All the gory
+  detail of the software and algorithms can be found in the preprint
+  <a href="http://arxiv.org/abs/1003.3652">here</a>.
+</p> 
+
+</div> 
+</body> 
+</html> 

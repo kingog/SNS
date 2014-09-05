@@ -1,0 +1,41 @@
+body {
+	background-color: #FFFFFF;
+	font-family: arial, sans-serif;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+h1 	{
+	font-family: arial, verdana, sans-serif;
+	font-weight: bold;
+}
+h2	{
+	font-family: arial, verdana, sans-serif;
+	font-weight: bold;
+	text-align: center;
+	font-size: xx-large;
+	color: #6699CC;
+}
+p 	{
+	font-family: arial, sans-serif;
+	text-indent: 30px;
+	text-align: justify;
+}
+ul	{
+	font-family: arial, sans-serif;
+}
+a:link {
+	color: #6699CC;
+	text-decoration: none;
+}
+a:visited {
+	color: #6699CC;
+	text-decoration: none;
+}
+table {
+	border: 0;
+}
+.indented
+   {
+   padding-left: 50pt;
+   padding-right: 50pt;
+   }
