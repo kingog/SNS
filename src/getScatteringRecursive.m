@@ -73,11 +73,14 @@ for k=1:length(tnodes)
     Nlist = 1:size(Sm,1);
     Nlist = Nlist(Nlist~=Nt);
     
-    % Situation for the c vector is slightly more complicated, because
-    % terminations still add noise. Update formula according to pg 86 of
-    % lab book 4: ci^new = ci + Sik*sqrt(k_B*T) where port k is terminated.
-    syms kb Tt real
-    cm = cm + Sm(:,Nt,:)*sqrt(kb*Tt); % need to-be-removed column of Sm at this point
+%     % Situation for the c vector is slightly more complicated, because
+%     % terminations still add noise. Update formula according to pg 86 of
+%     % lab book 4: ci^new = ci + Sik*sqrt(k_B*T) where port k is terminated.
+%     syms kb Tt real
+%     cm = cm + Sm(:,Nt,:)*sqrt(kb*Tt); % need to-be-removed column of Sm at this point
+
+    % If you want terminations to add noise, declare them as 1 port devices
+    % with a noise correlation matrix
     cm = cm(Nlist,:,:);
     Sm = Sm(Nlist,Nlist,:); % now safe to remove offending rows and columns of Sm
     

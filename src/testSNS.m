@@ -9,7 +9,7 @@ clear all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Modify this to point to the directory in which this file is stored:
-pth = '~/matlab/SNS1.5/';
+pth = '~/matlab/SNS/';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 addpath([pth 'pointers/']);

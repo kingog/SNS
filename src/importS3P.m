@@ -1,19 +1,21 @@
-function [f,S] = importS2P(fname)
-% [f,S] = importS2P(fname)
-% This function imports an S2P file. At the moment there is only support
+function [f,S] = importS3P(fname)
+% [f,S] = importS3P(fname)
+% This function imports an S3P file. At the moment there is only support
 % for S parameter files with a 50 Ohm impedance.
 
 [UNITS,form,hlines] = getSNPheader(fname);
+% Import the file
 d = importdata(fname, ' ', hlines);
 
-N = size(d.data,1);
+Ns = 3;
+
+N = size(d.data,1)/Ns;
 f = zeros(N,1);
-S = zeros(2,2,N);
+S = zeros(Ns,Ns,N);
 for k=1:N
-    D = d.data(k,:);
+    D = d.data((Ns*k-2):(Ns*k),:);
     f(k) = D(1,1)/UNITS;
-    D = D(:,2:end);
-    Sm = [D(1,1:2) D(1,5:6); D(1,3:4) D(1,7:8)];
+    Sm = [D(1,2:end); D(2,1:end-1); D(3,1:end-1)];
     switch form
         case 'MA'
             S(:,:,k) = Sm(:,1:2:end-1).*exp(1i*Sm(:,2:2:end)*pi/180);

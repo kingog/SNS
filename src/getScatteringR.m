@@ -111,11 +111,15 @@ else
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Take first element of cnodes
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+    cn = cnodes{1};
     if debug
         disp('Calling recursive network solver')
+        cn
+        cn.Nf
+        cn.Nf.S
+        cn.Nb
+        cn.Nb.S
     end
-    cn = cnodes{1};
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Build a new network from the nodes surrounding cnodes{1}
@@ -129,6 +133,7 @@ else
     inps = cn.Nb.nodes;
     % inps includes the cn node, remove it
     Pilist = [1:cn.Nb.N];
+    inn = {};
     if cn.Nf ~= cn.Nb
         Pilist = Pilist(Pilist~=cn.Nbp);
     else
@@ -141,6 +146,7 @@ else
     outs = cn.Nf.nodes;
     % outs includes the cn node, remove it
     Polist = [1:cn.Nf.N];
+    ott = {};
     if cn.Nf ~= cn.Nb
         Polist = Polist(Polist~=cn.Nfp);
         for k=1:length(Polist)

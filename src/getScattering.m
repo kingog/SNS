@@ -161,6 +161,14 @@ for n=1:Nc
     % to
     if debug
         fprintf('             Node %d of %d\n',n,Nc)
+        fprintf('             Forward Nport S is:')
+        cnodes{n}.Nf.S
+        fprintf('             Forward Nport N is:')
+        cnodes{n}.Nf.N
+        fprintf('             Backward Nport S is:')
+        cnodes{n}.Nb.S
+        fprintf('             Backward Nport N is:')
+        cnodes{n}.Nb.N
     end
     %%%%%%%%%%%%%%%%%%%%%%%%
     % Backwards first
